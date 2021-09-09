@@ -34,10 +34,17 @@ const Home: NextPage = () => {
       },
     ],
   });
+  const [error, setError] = useState('');
 
   const getContainer = async () => {
     console.log('getContainer');
+    setError('');
     const result = await souko.getContainerWithCode(containerCode);
+    if (result.error) {
+      setError(result.error);
+      console.log(error);
+      return;
+    }
     console.log(result);
     setContainer(result);
   };
@@ -45,6 +52,14 @@ const Home: NextPage = () => {
   return (
     <Layout title="コンテナ情報照会">
       <div>
+        {error ? (
+          <div className={`${commonStyles.alert} ${commonStyles.alert_danger}`}>
+            {error}
+          </div>
+        ) : (
+          <div></div>
+        )}
+
         <input
           placeholder="コンテナコード"
           type="number"

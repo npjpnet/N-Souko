@@ -161,10 +161,14 @@ class Souko {
     this._app.get(
       '/containers/code/:containerCode',
       (req: Express.Request, res: Express.Response) => {
-        this._db
+        const container = this._db
           .getContainerWithCode(req.params.containerCode)
           .then(
             async (o: { container: Container | null; devices: Device[] }) => {
+              if (!o.container) {
+                return res.status(404).json({ error: 'storage not found' });
+              }
+
               const result = {
                 container: o.container,
                 devices: await Promise.all(
@@ -183,8 +187,8 @@ class Souko {
               return res.json(result);
             }
           )
-          .catch((err) => {
-            throw err;
+          .catch((err: Error) => {
+            return res.status(404).json({ error: err.message });
           });
       }
     );

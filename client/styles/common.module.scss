@@ -80,7 +80,12 @@
 .alert {
   margin-bottom: 10px;
   padding: 10px;
+
   background-color: #3ba05888;
+
+  &_danger {
+    background-color: #d6534b88;
+  }
 }
 
 .infoTable {
