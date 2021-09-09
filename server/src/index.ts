@@ -126,10 +126,21 @@ class Souko {
             serialNumber: req.body.serialNumber,
             remarks: req.body.remarks,
           })
-          .then((o: { deviceId: Mongo.ObjectId; code: string }) => {
-            return res.json(o);
+          .then(async (o: { deviceId: Mongo.ObjectId; code: string }) => {
+            const product = await this._db.getProductWithId(
+              req.params.productId
+            );
+
+            if (!product) {
+              return res.status(404).json({ error: 'product not found' });
+            }
+
+            return res.json({
+              ...o,
+              productName: product.name,
+            });
           })
-          .catch((err: Error) => {
+          .catch(async (err: Error) => {
             return res.status(503).json({ error: err.message });
           });
       }

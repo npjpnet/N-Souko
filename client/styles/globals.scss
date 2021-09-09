@@ -28,6 +28,14 @@ a {
   user-select: none;
 }
 
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  border: none;
+}
+
 h1,
 h2,
 h3,
