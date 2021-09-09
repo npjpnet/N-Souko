@@ -1,0 +1,16 @@
+.header {
+  padding: 20px;
+
+  border-top: 10px solid #3ba058;
+  background-color: #eaeaea;
+
+  text-align: center;
+
+  &_title {
+    font-size: 1.5em;
+  }
+}
+
+.main {
+  padding: 10px;
+}
