@@ -30,8 +30,8 @@ export class Souko {
   };
 
   constructor() {
-    // this._baseURL = 'http://192.168.38.140:53894';
-    this._baseURL = 'http://localhost:53894';
+    this._baseURL = 'http://192.168.38.140:53894';
+    // this._baseURL = 'http://localhost:53894';
   }
 
   public async addProduct(o: {
@@ -71,6 +71,19 @@ export class Souko {
 
   public changeContainerWithDeviceId(): void {}
   public changeStatusWithDeviceId(): void {}
+
+  public async addContainer(o: {
+    storageId: string;
+    name: string;
+  }): Promise<any> {
+    console.log('addContainer with souko');
+    const res = await fetch(`${this._baseURL}/containers`, {
+      ...this._fetchPOSTOption,
+      body: JSON.stringify(o),
+    });
+    const json = await res.json();
+    return json;
+  }
 
   public async getContainerWithCode(code: string): Promise<any> {
     const res = await fetch(`${this._baseURL}/containers/code/${code}`);

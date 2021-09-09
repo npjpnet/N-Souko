@@ -15,6 +15,9 @@ const Home: NextPage = () => {
             <Link href="/containers/search">
               <a className={commonStyles.button}>コンテナ照会</a>
             </Link>
+            <Link href="/containers/add">
+              <a className={commonStyles.button}>コンテナ作成</a>
+            </Link>
             <Link href="/devices/changeContainer">
               <a className={commonStyles.button}>機材格納先更新</a>
             </Link>

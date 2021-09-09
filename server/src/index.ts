@@ -73,8 +73,18 @@ class Souko {
             storageId: req.body.storageId,
             name: req.body.name,
           })
-          .then((o: { containerId: Mongo.ObjectId; code: string }) => {
-            return res.json(o);
+          .then(async (o: { containerId: Mongo.ObjectId; code: string }) => {
+            const storage = await this._db
+              .getStorageWithId(req.body.storageId)
+              .catch((err: Error) => {
+                // console.log(err);
+              });
+
+            if (!storage) {
+              return res.status(404).json({ error: 'storage not found' });
+            }
+            console.log(storage);
+            return res.json({ ...o, name: req.body.name, storage });
           })
           .catch((err: Error) => {
             return res.status(503).json({ error: err.message });

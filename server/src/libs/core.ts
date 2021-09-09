@@ -192,6 +192,13 @@ export class Db {
     return ('000000' + id).slice(-6);
   }
 
+  public async getStorageWithId(storageId: string): Promise<Storage | null> {
+    const storage = await this._db
+      .collection<Storage>('storages')
+      .findOne({ _id: new Mongo.ObjectId(storageId) });
+
+    return storage;
+  }
   public async getContainerWithCode(containerCode: string): Promise<{
     container: Container | null;
     devices: Device[];
