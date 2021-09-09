@@ -1,4 +1,5 @@
 import { countReset } from 'console';
+import { stat } from 'fs';
 import * as Mongo from 'mongodb';
 import { PrefixUnaryOperator } from 'typescript';
 // const Mongo = require('mongodb');
@@ -241,4 +242,12 @@ export class Db {
 
     return products;
   }
+
+  private async _updateDeviceWithCode(
+    deviceCode: string,
+    o: {
+      status?: DeviceStatus;
+      containerCode?: string;
+    }
+  ) {}
 }

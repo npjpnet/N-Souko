@@ -48,12 +48,13 @@ class Souko {
     this._indexRoute();
 
     this._addContainerRoute();
-    this._addProductRoute();
-    this._addDeviceRoute();
-
     this._getContainerWithCodeRoute();
+
+    this._addDeviceRouteWithProductId();
     this._getDeviceWithCodeRoute();
 
+    this._addProductRoute();
+    this._getProductWithId();
     this._searchProductsRoute();
   }
 
@@ -102,14 +103,25 @@ class Souko {
     );
   }
 
-  private _addDeviceRoute(): void {
+  private _addDeviceRouteWithProductId(): void {
     this._app.post(
-      '/devices',
-      (req: Express.Request, res: Express.Response) => {
+      '/products/id/:productId/devices',
+      async (req: Express.Request, res: Express.Response) => {
+        const container = await this._db
+          .getContainerWithCode(req.body.containerCode)
+          .catch((err: Error) => {
+            // console.log(err);
+          });
+
+        if (!container || !container.container) {
+          return res.status(404).json({ error: 'container not found' });
+        }
+        const containerId = container.container._id;
+
         this._db
           .addDevice({
-            productId: req.body.productId,
-            containerId: req.body.containerId,
+            productId: req.params.productId,
+            containerId: containerId.toHexString(),
             status: req.body.status,
             serialNumber: req.body.serialNumber,
             remarks: req.body.remarks,
@@ -157,17 +169,14 @@ class Souko {
     );
   }
 
-  private _getDeviceWithCodeRoute(): void {
+  private _getProductWithId(): void {
     this._app.get(
-      '/devices/code/:deviceCode',
+      '/products/id/:productId',
       (req: Express.Request, res: Express.Response) => {
         this._db
-          .getDeviceWithCode(req.params.deviceCode)
-          .then((o: Device | null) => {
+          .getProductWithId(req.params.productId)
+          .then((o: Product | null) => {
             return res.json(o);
-          })
-          .catch((err) => {
-            throw err;
           });
       }
     );
@@ -193,6 +202,32 @@ class Souko {
           })
           .then((o: Product[]) => {
             return res.json(o);
+          })
+          .catch((err) => {
+            throw err;
+          });
+      }
+    );
+  }
+
+  private _getDeviceWithCodeRoute(): void {
+    this._app.get(
+      '/devices/code/:deviceCode',
+      (req: Express.Request, res: Express.Response) => {
+        this._db
+          .getDeviceWithCode(req.params.deviceCode)
+          .then(async (o: Device | null) => {
+            const result = o
+              ? {
+                  _id: o._id,
+                  code: o.code,
+                  status: o.status,
+                  serialNumber: o.serialNumber,
+                  remarks: o.remarks,
+                  product: await this._db.getProductWithId(o.productId),
+                }
+              : {};
+            return res.json(result);
           })
           .catch((err) => {
             throw err;
