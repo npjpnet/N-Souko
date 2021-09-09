@@ -8,6 +8,7 @@ import commonStyles from '../../styles/common.module.scss';
 
 const Home: NextPage = () => {
   const souko = new Souko();
+  const [alertMessage, setAlertMessage] = useState('');
 
   const [productId, setProductId] = useState('');
   const [productName, setProductName] = useState('');
@@ -26,6 +27,16 @@ const Home: NextPage = () => {
 
   const addProduct = async () => {
     console.log('addProduct');
+
+    if (!productName) {
+      setAlertMessage('機材の型番等備品名が入力されていません');
+      return;
+    }
+    if (genre === '') {
+      setAlertMessage('機材のジャンルが指定されていません');
+      return;
+    }
+
     const result = await souko.addProduct({
       name: productName,
       maker: { name: makerName },
@@ -38,7 +49,19 @@ const Home: NextPage = () => {
 
   const addDevice = async () => {
     console.log('addDevice');
+    setAlertMessage('');
+
     const newProductId = !productId ? await addProduct() : productId;
+    if (!newProductId) return;
+
+    if (!containerCode) {
+      setAlertMessage('コンテナコードが入力されていません');
+      return;
+    }
+    if (status === '') {
+      setAlertMessage('機材状態が指定されていません');
+      return;
+    }
 
     const result = await souko.addDevice(newProductId, {
       containerCode: containerCode,
@@ -46,6 +69,10 @@ const Home: NextPage = () => {
       serialNumber,
       remarks: deviceRemarks,
     });
+    if (result.error === 'container not found') {
+      setAlertMessage('指定されたコンテナが見つかりません');
+      return;
+    }
     setAddDeviceResult(result);
     console.log(result);
   };
@@ -69,6 +96,14 @@ const Home: NextPage = () => {
   return (
     <Layout title="製品登録">
       <div>
+        {alertMessage ? (
+          <div className={`${commonStyles.alert} ${commonStyles.alert_danger}`}>
+            {alertMessage}
+          </div>
+        ) : (
+          <div></div>
+        )}
+
         <div className={commonStyles.container}>
           <div className={commonStyles.section}>
             {addDeviceResult && addDeviceResult.code ? (
@@ -103,7 +138,7 @@ const Home: NextPage = () => {
               disabled
             ></input>
             <input
-              placeholder="型番"
+              placeholder="型番等備品名"
               className={commonStyles.input}
               onChange={(e) => setProductName(e.target.value)}
               value={productName}
@@ -143,6 +178,7 @@ const Home: NextPage = () => {
               className={commonStyles.input}
               onChange={(e) => setContainerCode(e.target.value)}
               value={containerCode}
+              required
             ></input>
             <select
               className={commonStyles.input}

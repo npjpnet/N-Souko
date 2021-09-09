@@ -17,6 +17,7 @@ export type AddProductResponse = {
 };
 
 export type AddDeviceResponse = {
+  error?: string;
   deviceId: string;
   code: string;
   productName: string;
@@ -30,8 +31,8 @@ export class Souko {
   };
 
   constructor() {
-    this._baseURL = 'http://192.168.38.140:53894';
-    // this._baseURL = 'http://localhost:53894';
+    // this._baseURL = 'http://192.168.38.140:53894';
+    this._baseURL = 'http://localhost:53894';
   }
 
   public async addProduct(o: {
@@ -87,6 +88,10 @@ export class Souko {
 
   public async getContainerWithCode(code: string): Promise<any> {
     const res = await fetch(`${this._baseURL}/containers/code/${code}`);
+    if (res.status === 404) {
+      return null;
+    }
+
     const json = await res.json();
     return json;
   }

@@ -8,6 +8,8 @@ import commonStyles from '../../styles/common.module.scss';
 
 const Home: NextPage = () => {
   const souko = new Souko();
+  const [alertMessage, setAlertMessage] = useState('');
+
   const [containerCode, setContainerCode] = useState('');
   const [container, setContainer] = useState({
     container: {
@@ -34,17 +36,22 @@ const Home: NextPage = () => {
       },
     ],
   });
-  const [error, setError] = useState('');
 
   const getContainer = async () => {
     console.log('getContainer');
-    setError('');
-    const result = await souko.getContainerWithCode(containerCode);
-    if (result.error) {
-      setError(result.error);
-      console.log(error);
+    setAlertMessage('');
+
+    if (!containerCode) {
+      setAlertMessage('コンテナコードを入力してください');
       return;
     }
+
+    const result = await souko.getContainerWithCode(containerCode);
+    if (!result) {
+      setAlertMessage('コンテナが見つかりません');
+      return;
+    }
+
     console.log(result);
     setContainer(result);
   };
@@ -52,9 +59,9 @@ const Home: NextPage = () => {
   return (
     <Layout title="コンテナ情報照会">
       <div>
-        {error ? (
+        {alertMessage ? (
           <div className={`${commonStyles.alert} ${commonStyles.alert_danger}`}>
-            {error}
+            {alertMessage}
           </div>
         ) : (
           <div></div>

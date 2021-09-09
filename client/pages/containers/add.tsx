@@ -8,6 +8,8 @@ import commonStyles from '../../styles/common.module.scss';
 
 const Home: NextPage = () => {
   const souko = new Souko();
+  const [alertMessage, setAlertMessage] = useState('');
+
   const [storageId, setStorageId] = useState('');
   const [containerName, setContainerName] = useState('');
 
@@ -23,16 +25,37 @@ const Home: NextPage = () => {
 
   const createContainer = async () => {
     console.log('createContainer');
+    setAlertMessage('');
+
+    if (!storageId) {
+      setAlertMessage('倉庫管理IDを入力してください');
+    }
+    if (!containerName) {
+      setAlertMessage('コンテナ名を入力してください');
+    }
+
     const result = await souko.addContainer({
       storageId,
       name: containerName,
     });
+    if (result.error === 'storage not found') {
+      setAlertMessage('指定された倉庫が見つかりません');
+    }
+
     setAddContainerResult(result);
   };
 
   return (
     <Layout title="コンテナ作成">
       <div>
+        {alertMessage ? (
+          <div className={`${commonStyles.alert} ${commonStyles.alert_danger}`}>
+            {alertMessage}
+          </div>
+        ) : (
+          <div></div>
+        )}
+
         {addContainerResult.containerId ? (
           <div>
             <div className={commonStyles.alert}>
