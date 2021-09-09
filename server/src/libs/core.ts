@@ -203,7 +203,6 @@ export class Db {
     if (!container) {
       throw new Error(`${containerCode} container not found`);
     }
-    console.log({ containerId: container._id.toHexString() });
 
     const devices = await this._db
       .collection<Device>('devices')
