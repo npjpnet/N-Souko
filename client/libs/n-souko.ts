@@ -53,7 +53,7 @@ export class Souko {
   };
 
   constructor() {
-    this._baseURL = 'http://192.168.38.140:53894';
+    this._baseURL = 'http://192.168.153.140:53894';
     // this._baseURL = 'http://localhost:53894';
   }
 
