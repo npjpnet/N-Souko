@@ -35,11 +35,8 @@ const Home: NextPage = () => {
             <Link href="/containers/add">
               <a className={commonStyles.button}>コンテナ作成</a>
             </Link>
-            <Link href="/devices/changeContainer">
-              <a className={commonStyles.button}>機材格納先更新</a>
-            </Link>
             <Link href="/devices/changeStatus">
-              <a className={commonStyles.button}>機材状態直接更新</a>
+              <a className={commonStyles.button}>機材情報更新</a>
             </Link>
           </div>
         </div>
