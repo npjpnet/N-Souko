@@ -18,6 +18,10 @@ const Home: NextPage = () => {
       code: '',
       name: '',
     },
+    storage: {
+      _id: '',
+      name: '',
+    },
     devices: [
       {
         _id: '',
@@ -59,14 +63,6 @@ const Home: NextPage = () => {
   return (
     <Layout title="コンテナ情報照会">
       <div>
-        {alertMessage ? (
-          <div className={`${commonStyles.alert} ${commonStyles.alert_danger}`}>
-            {alertMessage}
-          </div>
-        ) : (
-          <div></div>
-        )}
-
         <input
           placeholder="コンテナコード"
           type="number"
@@ -77,21 +73,31 @@ const Home: NextPage = () => {
         <button className={commonStyles.button} onClick={() => getContainer()}>
           照会
         </button>
+        {alertMessage ? (
+          <div className={`${commonStyles.alert} ${commonStyles.alert_danger}`}>
+            {alertMessage}
+          </div>
+        ) : (
+          <div></div>
+        )}
+
         {container && container.container._id ? (
           <div>
             <div className={commonStyles.section}>
               <table className={commonStyles.infoTable}>
                 <tbody>
                   <tr>
-                    <th>格納倉庫ID</th>
-                    <td>{container.container.storageId}</td>
+                    <th>格納倉庫</th>
+                    <td>
+                      {container.storage.name}({container.storage._id})
+                    </td>
                   </tr>
                   <tr>
                     <th>名称</th>
                     <td>{container.container.name}</td>
                   </tr>
                   <tr>
-                    <th>コード</th>
+                    <th>コンテナコード</th>
                     <td>{container.container.code}</td>
                   </tr>
                 </tbody>

@@ -191,6 +191,7 @@ class Souko {
 
               const result = {
                 container: o.container,
+                storage: await this._db.getStorageWithId(o.container.storageId),
                 devices: await Promise.all(
                   o.devices.map(async (v: Device) => {
                     return {
