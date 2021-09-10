@@ -58,11 +58,13 @@ export class Souko {
   }
 
   public async checkConnection(): Promise<{ error?: string; status?: string }> {
-    await fetch(`${this._baseURL}`).catch((err: Error) => {
-      return { error: err.message };
-    });
-    // const json = await res.json();
-    return { status: 'ok' };
+    return fetch(`${this._baseURL}`)
+      .then(async (res: Response) => {
+        return { status: 'ok' };
+      })
+      .catch((err: Error) => {
+        return { error: err.message };
+      });
   }
 
   public async addProduct(o: {
