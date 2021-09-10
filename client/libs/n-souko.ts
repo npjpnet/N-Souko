@@ -57,6 +57,14 @@ export class Souko {
     // this._baseURL = 'http://localhost:53894';
   }
 
+  public async checkConnection(): Promise<{ error?: string; status?: string }> {
+    await fetch(`${this._baseURL}`).catch((err: Error) => {
+      return { error: err.message };
+    });
+    // const json = await res.json();
+    return { status: 'ok' };
+  }
+
   public async addProduct(o: {
     name: string;
     maker: { name: string };
