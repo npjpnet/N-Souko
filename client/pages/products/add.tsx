@@ -137,6 +137,7 @@ const Home: NextPage = () => {
               value={productId}
               disabled
             ></input>
+
             <input
               placeholder="型番等備品名"
               className={commonStyles.input}
@@ -144,6 +145,7 @@ const Home: NextPage = () => {
               value={productName}
               disabled={!!productId}
             ></input>
+
             <input
               placeholder="メーカー名"
               className={commonStyles.input}
@@ -151,6 +153,10 @@ const Home: NextPage = () => {
               value={makerName}
               disabled={!!productId}
             ></input>
+            <span className={commonStyles.help}>
+              ノーブランド、不明な場合は入力しないでください。
+            </span>
+
             <select
               className={commonStyles.input}
               onChange={(e) => setGenre(e.target.value)}
@@ -180,6 +186,10 @@ const Home: NextPage = () => {
               value={containerCode}
               required
             ></input>
+            <span className={commonStyles.help}>
+              コンテナのQRコードを読み取るか、併記されている6桁の数字を入力してください。
+            </span>
+
             <select
               className={commonStyles.input}
               onChange={(e) => setStatus(e.target.value)}
@@ -191,12 +201,17 @@ const Home: NextPage = () => {
               <option value="failure">故障</option>
               <option value="remove">破棄･管理対象外</option>
             </select>
+
             <input
               placeholder="シリアルナンバー"
               className={commonStyles.input}
               onChange={(e) => setSerialNumber(e.target.value)}
               value={serialNumber}
             ></input>
+            <span className={commonStyles.help}>
+              不明な場合は入力しないでください。
+            </span>
+
             <input
               placeholder="備考"
               className={commonStyles.input}

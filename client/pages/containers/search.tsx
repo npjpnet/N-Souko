@@ -70,6 +70,9 @@ const Home: NextPage = () => {
           value={containerCode}
           onChange={(e) => setContainerCode(e.target.value)}
         ></input>
+        <span className={commonStyles.help}>
+          コンテナのQRコードを読み取るか、併記されている6桁の数字を入力してください。
+        </span>
         <button className={commonStyles.button} onClick={() => getContainer()}>
           照会
         </button>

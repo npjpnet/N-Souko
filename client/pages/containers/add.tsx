@@ -80,12 +80,18 @@ const Home: NextPage = () => {
             value={storageId}
             onChange={(e) => setStorageId(e.target.value)}
           ></input>
+          <span className={commonStyles.help}>
+            倉庫に掲示されている倉庫管理QRコードを読み取ってください。
+          </span>
           <input
             placeholder="コンテナ名"
             className={commonStyles.input}
             value={containerName}
             onChange={(e) => setContainerName(e.target.value)}
           ></input>
+          <span className={commonStyles.help}>
+            コンテナのQRコードを読み取るか、併記されている6桁の数字を入力してください。
+          </span>
         </div>
       </div>
     </Layout>
