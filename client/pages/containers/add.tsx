@@ -89,9 +89,6 @@ const Home: NextPage = () => {
             value={containerName}
             onChange={(e) => setContainerName(e.target.value)}
           ></input>
-          <span className={commonStyles.help}>
-            コンテナのQRコードを読み取るか、併記されている6桁の数字を入力してください。
-          </span>
         </div>
       </div>
     </Layout>

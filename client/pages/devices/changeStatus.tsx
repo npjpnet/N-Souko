@@ -77,14 +77,14 @@ const Home: NextPage = () => {
           </span>
 
           <input
-            placeholder="コンテナコード"
+            placeholder="移動先コンテナコード"
             type="number"
             className={commonStyles.input}
             value={containerCode}
             onChange={(e) => setContainerCode(e.target.value)}
           ></input>
           <span className={commonStyles.help}>
-            機材の格納先を変更する場合は、格納先のコンテナコードを入力してください。変更しない場合は何も入力しないでください。
+            変更しない場合は何も入力しないでください。
           </span>
 
           <select
@@ -99,7 +99,7 @@ const Home: NextPage = () => {
             <option value="remove">破棄･管理対象外</option>
           </select>
           <span className={commonStyles.help}>
-            機材の状態を変更する場合は、適切な状態を選択してください。変更しない場合は「現状維持」にしてください。
+            変更しない場合は「現状維持」にしてください。
           </span>
         </div>
       </div>
