@@ -48,7 +48,7 @@ const Home: NextPage = () => {
 
     const result = await souko.getContainerWithCode(containerCode);
     if (!result) {
-      setAlertMessage('コンテナが見つかりません');
+      setAlertMessage('指定されたコンテナが見つかりません');
       return;
     }
 

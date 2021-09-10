@@ -8,12 +8,42 @@ import commonStyles from '../../styles/common.module.scss';
 
 const Home: NextPage = () => {
   const souko = new Souko();
+  const [alertMessage, setAlertMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+
   const [deviceCode, setDeviceCode] = useState('');
+  const [containerCode, setContainerCode] = useState('');
   const [status, setStatus] = useState('');
 
-  const changeStatus = () => {
+  const changeStatus = async () => {
     console.log('changeStatus');
-    souko.changeStatusWithDeviceId();
+    setAlertMessage('');
+    setSuccessMessage('');
+
+    if (!deviceCode) {
+      setAlertMessage('機材コードを入力してください');
+      return;
+    }
+
+    const result = await souko.changeDeviceWithCode(deviceCode, {
+      status,
+      containerCode,
+    });
+    console.log(result);
+    if (result.error) {
+      setAlertMessage(
+        result.error === 'device not found'
+          ? '指定された機材が見つかりません'
+          : result.error === 'container not found'
+          ? '指定されたコンテナが見つかりません'
+          : ''
+      );
+    }
+    if (result.status === 'ok') {
+      setSuccessMessage(
+        `${result.product.name}(${result.device.code})の状態の変更が完了しました`
+      );
+    }
   };
 
   return (
@@ -22,17 +52,14 @@ const Home: NextPage = () => {
         <button className={commonStyles.button} onClick={() => changeStatus()}>
           機材状態更新
         </button>
-        {true ? (
-          <div>
-            {/* <button
-              className={`${commonStyles.button} ${commonStyles.button_danger}`}
-              onClick={() => resetInput()}
-            >
-              入力情報をクリア
-            </button> */}
-            <div className={commonStyles.alert}>
-              FZ-X1(000049)の状態を「故障」に変更しました。
-            </div>
+        {successMessage ? (
+          <div className={commonStyles.alert}>{successMessage}</div>
+        ) : (
+          <div></div>
+        )}
+        {alertMessage ? (
+          <div className={`${commonStyles.alert} ${commonStyles.alert_danger}`}>
+            {alertMessage}
           </div>
         ) : (
           <div></div>
@@ -44,6 +71,13 @@ const Home: NextPage = () => {
             className={commonStyles.input}
             value={deviceCode}
             onChange={(e) => setDeviceCode(e.target.value)}
+          ></input>
+          <input
+            placeholder="コンテナコード"
+            type="number"
+            className={commonStyles.input}
+            value={containerCode}
+            onChange={(e) => setContainerCode(e.target.value)}
           ></input>
           <select
             className={commonStyles.input}

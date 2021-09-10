@@ -50,11 +50,12 @@ class Souko {
     this._addContainerRoute();
     this._getContainerWithCodeRoute();
 
-    this._addDeviceRouteWithProductId();
+    this._addDeviceRouteWithProductIdRoute();
+    this._updateDeviceWithCodeRoute();
     this._getDeviceWithCodeRoute();
 
     this._addProductRoute();
-    this._getProductWithId();
+    this._getProductWithIdRoute();
     this._searchProductsRoute();
   }
 
@@ -113,7 +114,7 @@ class Souko {
     );
   }
 
-  private _addDeviceRouteWithProductId(): void {
+  private _addDeviceRouteWithProductIdRoute(): void {
     this._app.post(
       '/products/id/:productId/devices',
       async (req: Express.Request, res: Express.Response) => {
@@ -157,11 +158,30 @@ class Souko {
     );
   }
 
+  private _updateDeviceWithCodeRoute(): void {
+    this._app.post(
+      '/devices/code/:deviceCode',
+      (req: Express.Request, res: Express.Response) => {
+        this._db
+          .updateDeviceWithCode(req.params.deviceCode, {
+            status: req.body.status,
+            containerCode: req.body.containerCode,
+          })
+          .then((o) => {
+            return res.json(o);
+          })
+          .catch((err: Error) => {
+            return res.status(404).json({ error: err.message });
+          });
+      }
+    );
+  }
+
   private _getContainerWithCodeRoute(): void {
     this._app.get(
       '/containers/code/:containerCode',
       (req: Express.Request, res: Express.Response) => {
-        const container = this._db
+        this._db
           .getContainerWithCode(req.params.containerCode)
           .then(
             async (o: { container: Container | null; devices: Device[] }) => {
@@ -194,7 +214,7 @@ class Souko {
     );
   }
 
-  private _getProductWithId(): void {
+  private _getProductWithIdRoute(): void {
     this._app.get(
       '/products/id/:productId',
       (req: Express.Request, res: Express.Response) => {

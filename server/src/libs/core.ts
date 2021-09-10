@@ -199,6 +199,30 @@ export class Db {
 
     return storage;
   }
+
+  public async getContainerWithId(containerId: Mongo.ObjectId): Promise<{
+    container: Container | null;
+    devices: Device[];
+  }> {
+    const container = await this._db
+      .collection<Container>('containers')
+      .findOne({ _id: containerId }, { sort: { _id: -1 } });
+
+    if (!container) {
+      throw new Error(`${containerId} container not found`);
+    }
+
+    const devices = await this._db
+      .collection<Device>('devices')
+      .find({ containerId: container._id.toHexString() })
+      .toArray();
+
+    return {
+      container,
+      devices,
+    };
+  }
+
   public async getContainerWithCode(containerCode: string): Promise<{
     container: Container | null;
     devices: Device[];
@@ -208,7 +232,7 @@ export class Db {
       .findOne({ code: containerCode }, { sort: { _id: -1 } });
 
     if (!container) {
-      throw new Error(`${containerCode} container not found`);
+      throw new Error(`container not found`);
     }
 
     const devices = await this._db
@@ -249,11 +273,44 @@ export class Db {
     return products;
   }
 
-  private async _updateDeviceWithCode(
+  public async updateDeviceWithCode(
     deviceCode: string,
     o: {
-      status?: DeviceStatus;
-      containerCode?: string;
+      status: DeviceStatus;
+      containerCode: string;
     }
-  ) {}
+  ) {
+    const device = await this.getDeviceWithCode(deviceCode);
+    if (!device) {
+      throw new Error('device not found');
+    }
+
+    const container = await this.getContainerWithId(
+      new Mongo.ObjectId(device.containerId)
+    );
+    const newContainer = await this.getContainerWithCode(o.containerCode);
+    if (!container.container || !newContainer.container) {
+      throw new Error('container not found');
+    }
+
+    const newContainerId = o.containerCode
+      ? newContainer.container._id
+      : container.container._id;
+
+    this._db.collection<Device>('devices').updateOne(
+      { code: deviceCode },
+      {
+        $set: {
+          status: o.status !== '' ? o.status : device.status,
+          containerId: newContainerId.toHexString(),
+        },
+      }
+    );
+
+    return {
+      status: 'ok',
+      device: await this.getDeviceWithCode(deviceCode),
+      product: await this.getProductWithId(device.productId),
+    };
+  }
 }

@@ -23,6 +23,28 @@ export type AddDeviceResponse = {
   productName: string;
 };
 
+export type ChangeDeviceResponse = {
+  error?: string;
+  status?: string;
+  device: {
+    _id: string;
+    productId: string;
+    containerId: string;
+    status: string;
+    serialNumber: string;
+    remarks: string;
+    code: string;
+  };
+  product: {
+    _id: string;
+    name: string;
+    maker: {
+      name: string;
+    };
+    genre: string;
+  };
+};
+
 export class Souko {
   private _baseURL: string;
   private _fetchPOSTOption = {
@@ -70,8 +92,21 @@ export class Souko {
     return json as AddDeviceResponse;
   }
 
-  public changeContainerWithDeviceId(): void {}
-  public changeStatusWithDeviceId(): void {}
+  public async changeDeviceWithCode(
+    deviceCode: string,
+    o: {
+      status: DeviceStatus;
+      containerCode: string;
+    }
+  ): Promise<ChangeDeviceResponse> {
+    console.log('changeDeviceWithCode with souko');
+    const res = await fetch(`${this._baseURL}/devices/code/${deviceCode}`, {
+      ...this._fetchPOSTOption,
+      body: JSON.stringify(o),
+    });
+    const json = await res.json();
+    return json;
+  }
 
   public async addContainer(o: {
     storageId: string;
