@@ -53,7 +53,7 @@ export class Souko {
   };
 
   constructor() {
-    this._baseURL = 'http://api.dev.0x267.nectarition.jp';
+    this._baseURL = 'https://api.dev.0x267.nectarition.jp';
     // this._baseURL = 'http://localhost:53894';
   }
 
