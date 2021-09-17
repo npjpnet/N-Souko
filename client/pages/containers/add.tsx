@@ -29,9 +29,11 @@ const Home: NextPage = () => {
 
     if (!storageId) {
       setAlertMessage('倉庫管理IDを入力してください');
+      return;
     }
     if (!containerName) {
       setAlertMessage('コンテナ名を入力してください');
+      return;
     }
 
     const result = await souko.addContainer({
@@ -40,6 +42,7 @@ const Home: NextPage = () => {
     });
     if (result.error === 'storage not found') {
       setAlertMessage('指定された倉庫が見つかりません');
+      return;
     }
 
     setAddContainerResult(result);
