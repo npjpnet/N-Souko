@@ -63,16 +63,20 @@ const Home: NextPage = () => {
   return (
     <Layout title="コンテナ情報照会">
       <div>
-        <input
-          placeholder="コンテナコード"
-          type="number"
-          className={commonStyles.input}
-          value={containerCode}
-          onChange={(e) => setContainerCode(e.target.value)}
-        ></input>
-        <span className={commonStyles.help}>
-          コンテナのQRコードを読み取るか、併記されている6桁の数字を入力してください。
-        </span>
+        <div className={commonStyles.formPart}>
+          <input
+            placeholder="コンテナコード"
+            type="number"
+            className={commonStyles.input}
+            value={containerCode}
+            onChange={(e) => setContainerCode(e.target.value)}
+          ></input>
+          <label className={commonStyles.input_label}>コンテナコード</label>
+          <span className={commonStyles.help}>
+            コンテナのQRコードを読み取るか、併記されている6桁の数字を入力してください。
+          </span>
+        </div>
+
         <button className={commonStyles.button} onClick={() => getContainer()}>
           照会
         </button>

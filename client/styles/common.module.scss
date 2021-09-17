@@ -52,9 +52,15 @@
   }
 }
 
+.formPart {
+  display: flex;
+  flex-direction: column;
+}
 .input {
   display: block;
   width: 100%;
+
+  order: 2;
 
   margin-bottom: 5px;
   padding: 10px;
@@ -75,6 +81,26 @@
   &:disabled {
     background-color: #87878744;
   }
+
+  &::placeholder {
+    color: transparent;
+  }
+
+  &:focus ~ &_label,
+  &:not(:placeholder-shown) ~ &_label {
+    transform: translateY(0) scale(0.8);
+  }
+
+  &_label {
+    display: block;
+    padding-left: 10px;
+    order: 1;
+    transition: transform 0.2s;
+    transform: translateY(1.5em) scale(1);
+    transform-origin: 0 100%;
+    color: #878787;
+    pointer-events: none;
+  }
 }
 
 .help {
@@ -84,6 +110,14 @@
   margin-bottom: 10px;
   // color: #ffffff;
   background-color: #3ba05888;
+
+  .formPart & {
+    order: 3;
+  }
+
+  .formPart:not(:focus-within) & {
+    background-color: #eaeaea;
+  }
 }
 
 .alert {

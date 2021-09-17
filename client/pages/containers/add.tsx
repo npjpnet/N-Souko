@@ -77,21 +77,28 @@ const Home: NextPage = () => {
           コンテナ作成
         </button>
         <div>
-          <input
-            placeholder="倉庫管理ID"
-            className={commonStyles.input}
-            value={storageId}
-            onChange={(e) => setStorageId(e.target.value)}
-          ></input>
-          <span className={commonStyles.help}>
-            倉庫に掲示されている倉庫管理QRコードを読み取ってください。
-          </span>
-          <input
-            placeholder="コンテナ名"
-            className={commonStyles.input}
-            value={containerName}
-            onChange={(e) => setContainerName(e.target.value)}
-          ></input>
+          <div className={commonStyles.formPart}>
+            <input
+              placeholder="倉庫管理ID"
+              className={commonStyles.input}
+              value={storageId}
+              onChange={(e) => setStorageId(e.target.value)}
+            ></input>
+            <label className={commonStyles.input_label}>倉庫管理ID</label>
+            <span className={commonStyles.help}>
+              倉庫に掲示されている倉庫管理QRコードを読み取ってください。
+            </span>
+          </div>
+
+          <div className={commonStyles.formPart}>
+            <input
+              placeholder="コンテナ名"
+              className={commonStyles.input}
+              value={containerName}
+              onChange={(e) => setContainerName(e.target.value)}
+            ></input>
+            <label className={commonStyles.input_label}>コンテナ名</label>
+          </div>
         </div>
       </div>
     </Layout>

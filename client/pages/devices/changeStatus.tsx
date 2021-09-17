@@ -65,42 +65,53 @@ const Home: NextPage = () => {
           <div></div>
         )}
         <div>
-          <input
-            placeholder="機材コード"
-            type="number"
-            className={commonStyles.input}
-            value={deviceCode}
-            onChange={(e) => setDeviceCode(e.target.value)}
-          ></input>
-          <span className={commonStyles.help}>
-            状態を変更する機材に貼付されているQRコードを読み取るか、併記されている6桁の数字を入力してください。
-          </span>
+          <div className={commonStyles.formPart}>
+            <input
+              placeholder="機材コード"
+              type="number"
+              className={commonStyles.input}
+              value={deviceCode}
+              onChange={(e) => setDeviceCode(e.target.value)}
+            ></input>
+            <label className={commonStyles.input_label}>機材コード</label>
+            <span className={commonStyles.help}>
+              状態を変更する機材に貼付されているQRコードを読み取るか、併記されている6桁の数字を入力してください。
+            </span>
+          </div>
 
-          <input
-            placeholder="移動先コンテナコード"
-            type="number"
-            className={commonStyles.input}
-            value={containerCode}
-            onChange={(e) => setContainerCode(e.target.value)}
-          ></input>
-          <span className={commonStyles.help}>
-            変更しない場合は何も入力しないでください。
-          </span>
+          <div className={commonStyles.formPart}>
+            <input
+              placeholder="移動先コンテナコード"
+              type="number"
+              className={commonStyles.input}
+              value={containerCode}
+              onChange={(e) => setContainerCode(e.target.value)}
+            ></input>
+            <label className={commonStyles.input_label}>
+              移動先コンテナコード
+            </label>
+            <span className={commonStyles.help}>
+              変更しない場合は何も入力しないでください。
+            </span>
+          </div>
 
-          <select
-            className={commonStyles.input}
-            onChange={(e) => setStatus(e.target.value)}
-            value={status}
-          >
-            <option value="">現状維持</option>
-            <option value="available">使用可能</option>
-            <option value="reparing">修理中</option>
-            <option value="failure">故障</option>
-            <option value="remove">破棄･管理対象外</option>
-          </select>
-          <span className={commonStyles.help}>
-            変更しない場合は「現状維持」にしてください。
-          </span>
+          <div className={commonStyles.formPart}>
+            <select
+              className={commonStyles.input}
+              onChange={(e) => setStatus(e.target.value)}
+              value={status}
+            >
+              <option value="">現状維持</option>
+              <option value="available">使用可能</option>
+              <option value="reparing">修理中</option>
+              <option value="failure">故障</option>
+              <option value="remove">破棄･管理対象外</option>
+            </select>
+            <label className={commonStyles.input_label}>機材状態</label>
+            <span className={commonStyles.help}>
+              変更しない場合は「現状維持」にしてください。
+            </span>
+          </div>
         </div>
       </div>
     </Layout>
