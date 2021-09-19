@@ -1,8 +1,11 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import Express from 'express';
+import Express, { RequestHandler } from 'express';
 import cors from 'cors';
+
+import jwt from 'express-jwt';
+import jwksRsa from 'jwks-rsa';
 
 import Mongo from 'mongodb';
 import {
@@ -57,6 +60,8 @@ class Souko {
     this._addProductRoute();
     this._getProductWithIdRoute();
     this._searchProductsRoute();
+
+    this._checkLoggedInRoute();
   }
 
   private _indexRoute(): void {
@@ -280,6 +285,31 @@ class Souko {
           });
       }
     );
+  }
+
+  private _checkLoggedInRoute(): void {
+    this._app.get(
+      '/checkLoggedIn',
+      this._checkJWTMiddleware(),
+      (req: Express.Request, res: Express.Response) => {
+        console.log(req.user);
+        return res.json({ message: 'hello' });
+      }
+    );
+  }
+
+  private _checkJWTMiddleware(): RequestHandler {
+    return jwt({
+      secret: jwksRsa.expressJwtSecret({
+        cache: true,
+        rateLimit: true,
+        jwksRequestsPerMinute: 5,
+        jwksUri: `https://YOUR_DOMAIN/.well-known/jwks.json`,
+      }),
+      audience: 'YOUR_API_IDENTIFIER',
+      algorithms: ['RS256'],
+      credentialsRequired: false,
+    });
   }
 }
 

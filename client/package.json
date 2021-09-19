@@ -10,6 +10,8 @@
     "export": "next build && next export"
   },
   "dependencies": {
+    "@auth0/auth0-react": "^1.7.0",
+    "@types/": "auth0/auth0-react",
     "next": "11.1.2",
     "next-offline": "^5.0.5",
     "next-pwa": "^5.3.1",
