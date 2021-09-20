@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-document-import-in-page */
 import Document, {
   Html,
   Head,
@@ -19,7 +20,7 @@ class MyDocument extends Document {
       <Html lang="ja-JP" dir="ltr">
         <Head>
           <link rel="manifest" href="/manifest.json" />
-          <script>console.log('aa')</script>
+          {/* <script>console.log('aa')</script> */}
         </Head>
         <body>
           <Main />
