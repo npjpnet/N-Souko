@@ -4,8 +4,8 @@ import type { AppProps } from 'next/app';
 import { Auth0Provider } from '@auth0/auth0-react';
 
 function MyApp({ Component, pageProps }: AppProps) {
-  if (!process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID) return;
-  if (!process.env.NEXT_PUBLIC_AUTH0_DOMAIN) return;
+  if (!process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID) return <></>;
+  if (!process.env.NEXT_PUBLIC_AUTH0_DOMAIN) return <></>;
 
   return (
     <Auth0Provider
