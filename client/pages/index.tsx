@@ -103,7 +103,12 @@ const Home: NextPage = () => {
           <div className={commonStyles.alert}>
             {user?.name}としてログイン中です
           </div>
-          <button className={commonStyles.button} onClick={() => logout()}>
+          <button
+            className={commonStyles.button}
+            onClick={() =>
+              logout({ returnTo: process.env.NEXT_PUBLIC_AUTH0_REDIRECT_URL })
+            }
+          >
             ログアウト
           </button>
         </div>

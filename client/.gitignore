@@ -35,3 +35,6 @@ yarn-error.log*
 
 *.js.map
 .env
+
+workbox*.js
+sw.js
