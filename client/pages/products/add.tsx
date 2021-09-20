@@ -1,14 +1,18 @@
 import { useState } from 'react';
 import { Souko } from '../../libs/n-souko';
+import { useAuth0 } from '@auth0/auth0-react';
 
 import type { NextPage } from 'next';
 import Layout from '../../components/layout';
 import WithAuth from '../../components/with-auth';
 
+import useProduct from '../../hooks/useProduct';
+
 import commonStyles from '../../styles/common.module.scss';
 
 const Home: NextPage = () => {
-  const souko = new Souko();
+  const { addDeviceWithProductId } = useProduct();
+
   const [alertMessage, setAlertMessage] = useState('');
 
   const [productId, setProductId] = useState('');

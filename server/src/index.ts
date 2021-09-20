@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import Express from 'express';
+import Express, { NextFunction, RequestHandler } from 'express';
 import cors from 'cors';
 
 import Mongo from 'mongodb';
@@ -13,16 +13,27 @@ import {
   genre as GenreArray,
 } from './libs/core';
 
+import jwt from 'express-jwt';
+import jwksRsa from 'jwks-rsa';
+
 class Souko {
   private _app: Express.Application;
   private _db: Db;
+  private _auth0Domain: string;
 
-  constructor(o: { dbUri: string | undefined; dbName: string | undefined }) {
+  constructor(o: {
+    dbUri: string | undefined;
+    dbName: string | undefined;
+    auth0: { domain: string | undefined };
+  }) {
     if (!o.dbUri) throw new Error('データベースURIが入力されていません。');
     if (!o.dbName) throw new Error('データベース名が入力されていません。');
+    if (!o.auth0.domain)
+      throw new Error('Auth0テナントドメインが入力されていません。');
 
     this._app = Express();
     this._db = new Db(o.dbUri, o.dbName);
+    this._auth0Domain = o.auth0.domain;
   }
 
   public start(): void {
@@ -57,6 +68,8 @@ class Souko {
     this._addProductRoute();
     this._getProductWithIdRoute();
     this._searchProductsRoute();
+
+    this._checkJWTRoute();
   }
 
   private _indexRoute(): void {
@@ -68,6 +81,7 @@ class Souko {
   private _addContainerRoute(): void {
     this._app.post(
       '/containers',
+      ...this._withJWTMiddleware(),
       (req: Express.Request, res: Express.Response) => {
         this._db
           .addContainer({
@@ -97,6 +111,7 @@ class Souko {
   private _addProductRoute(): void {
     this._app.post(
       '/products',
+      ...this._withJWTMiddleware(),
       (req: Express.Request, res: Express.Response) => {
         this._db
           .addProduct({
@@ -117,6 +132,7 @@ class Souko {
   private _addDeviceRouteWithProductIdRoute(): void {
     this._app.post(
       '/products/id/:productId/devices',
+      ...this._withJWTMiddleware(),
       async (req: Express.Request, res: Express.Response) => {
         const container = await this._db
           .getContainerWithCode(req.body.containerCode)
@@ -161,6 +177,7 @@ class Souko {
   private _updateDeviceWithCodeRoute(): void {
     this._app.post(
       '/devices/code/:deviceCode',
+      ...this._withJWTMiddleware(),
       (req: Express.Request, res: Express.Response) => {
         this._db
           .updateDeviceWithCode(req.params.deviceCode, {
@@ -180,6 +197,7 @@ class Souko {
   private _getContainerWithCodeRoute(): void {
     this._app.get(
       '/containers/code/:containerCode',
+      ...this._withJWTMiddleware(),
       (req: Express.Request, res: Express.Response) => {
         this._db
           .getContainerWithCode(req.params.containerCode)
@@ -218,6 +236,7 @@ class Souko {
   private _getProductWithIdRoute(): void {
     this._app.get(
       '/products/id/:productId',
+      ...this._withJWTMiddleware(),
       (req: Express.Request, res: Express.Response) => {
         this._db
           .getProductWithId(req.params.productId)
@@ -231,6 +250,7 @@ class Souko {
   private _searchProductsRoute(): void {
     this._app.get(
       '/products/search',
+      ...this._withJWTMiddleware(),
       (req: Express.Request, res: Express.Response) => {
         const genre =
           typeof req.query.genre === 'string' &&
@@ -259,6 +279,7 @@ class Souko {
   private _getDeviceWithCodeRoute(): void {
     this._app.get(
       '/devices/code/:deviceCode',
+      ...this._withJWTMiddleware(),
       (req: Express.Request, res: Express.Response) => {
         this._db
           .getDeviceWithCode(req.params.deviceCode)
@@ -281,10 +302,45 @@ class Souko {
       }
     );
   }
+
+  private _checkJWTRoute(): void {
+    this._app.get(`/checkJWT`, ...this._withJWTMiddleware(), (req, res) => {
+      return res.json({ message: 'hello jwt-world!' });
+    });
+  }
+
+  private _withJWTMiddleware(): RequestHandler[] {
+    return [
+      jwt({
+        // Dynamically provide a signing key
+        // based on the kid in the header and
+        // the signing keys provided by the JWKS endpoint.
+        secret: jwksRsa.expressJwtSecret({
+          cache: true,
+          rateLimit: true,
+          jwksRequestsPerMinute: 5,
+          jwksUri: `https://${this._auth0Domain}/.well-known/jwks.json`,
+        }),
+
+        // Validate the audience and the issuer.
+        audience: `https://${this._auth0Domain}/api/v2/`,
+        issuer: [`https://${this._auth0Domain}/`],
+        algorithms: ['RS256'],
+        credentialsRequired: false,
+      }),
+      (req: Express.Request, res: Express.Response, next: NextFunction) => {
+        if (!req.user) {
+          return res.status(401).json({ error: 'unauthorized' });
+        }
+        next();
+      },
+    ];
+  }
 }
 
 const souko = new Souko({
   dbUri: process.env.DB_URI,
   dbName: process.env.DB_NAME,
+  auth0: { domain: process.env.AUTH0_DOMAIN },
 });
 souko.start();

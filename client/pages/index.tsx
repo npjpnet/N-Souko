@@ -1,27 +1,26 @@
 import { useState } from 'react';
-import { Souko } from '../libs/n-souko';
 
 import Link from 'next/link';
 
 import type { NextPage } from 'next';
 import Layout from '../components/layout';
+import useAPIService from '../hooks/useAPIService';
 
 import commonStyles from '../styles/common.module.scss';
 import { useAuth0 } from '@auth0/auth0-react';
 
 const Home: NextPage = () => {
-  const souko = new Souko();
-
   const { isLoading, isAuthenticated, loginWithPopup, logout } = useAuth0();
 
   const [alertMessage, setAlertMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
-  const checkConnection = async () => {
+  const { checkConnection } = useAPIService();
+  const checkConnectionController = async () => {
     setAlertMessage('');
     setSuccessMessage('');
 
-    const result = await souko.checkConnection();
+    const result = await checkConnection();
     if (result.error) setAlertMessage(`API接続エラー ${result.error}`);
     if (result.status === 'ok') setSuccessMessage('APIは正常に動作しています');
   };
@@ -76,7 +75,7 @@ const Home: NextPage = () => {
         <div>
           <button
             className={commonStyles.button}
-            onClick={() => checkConnection()}
+            onClick={() => checkConnectionController()}
           >
             APIサーバ接続確認
           </button>

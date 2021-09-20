@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Souko } from '../../libs/n-souko';
+
+import useContainer from '../../hooks/useContainer';
 
 import type { NextPage } from 'next';
 import Layout from '../../components/layout';
@@ -8,7 +9,6 @@ import WithAuth from '../../components/with-auth';
 import commonStyles from '../../styles/common.module.scss';
 
 const Home: NextPage = () => {
-  const souko = new Souko();
   const [alertMessage, setAlertMessage] = useState('');
 
   const [storageId, setStorageId] = useState('');
@@ -24,6 +24,8 @@ const Home: NextPage = () => {
     },
   });
 
+  const { addContainer } = useContainer();
+
   const createContainer = async () => {
     console.log('createContainer');
     setAlertMessage('');
@@ -37,7 +39,7 @@ const Home: NextPage = () => {
       return;
     }
 
-    const result = await souko.addContainer({
+    const result = await addContainer({
       storageId,
       name: containerName,
     });
