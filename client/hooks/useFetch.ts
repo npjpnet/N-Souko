@@ -1,5 +1,5 @@
-// const _baseURL = 'https://api.dev.0x267.nectarition.jp';
-const _baseURL = 'http://localhost:53894';
+const _baseURL = 'https://api.dev.0x267.nectarition.jp';
+// const _baseURL = 'http://localhost:53894';
 
 const useFetch = () => {
   const get = (endpoint: string, accessToken?: string) => {
