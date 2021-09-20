@@ -1,9 +1,16 @@
 import { useAuth0 } from '@auth0/auth0-react';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 const useAuth0Service = () => {
+  const [token, setToken] = useState('');
   const { getAccessTokenSilently } = useAuth0();
-  const token = getAccessTokenSilently();
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      setToken(await getAccessTokenSilently());
+    };
+    fetchToken();
+  }, [token]);
 
   const getToken = useCallback(() => {
     return token;
