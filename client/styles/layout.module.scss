@@ -1,13 +1,20 @@
 .header {
-  padding: 20px;
+  // padding: 20px;
 
-  border-top: 10px solid #3ba058;
+  // border-top: 10px solid #3ba058;
   background-color: #eaeaea;
 
   text-align: center;
 
   &_title {
+    padding: 25px;
     font-size: 1.5em;
+  }
+
+  &_top {
+    padding: 5px;
+    background-color: #3ba058;
+    color: #ffffff;
   }
 }
 

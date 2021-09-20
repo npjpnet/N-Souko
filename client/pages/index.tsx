@@ -10,7 +10,8 @@ import commonStyles from '../styles/common.module.scss';
 import { useAuth0 } from '@auth0/auth0-react';
 
 const Home: NextPage = () => {
-  const { isLoading, isAuthenticated, loginWithPopup, logout } = useAuth0();
+  const { isLoading, isAuthenticated, user, loginWithPopup, logout } =
+    useAuth0();
 
   const [alertMessage, setAlertMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
@@ -99,6 +100,9 @@ const Home: NextPage = () => {
       <div>
         <h2>N-Memkan 接続管理</h2>
         <div>
+          <div className={commonStyles.alert}>
+            {user?.name}としてログイン中です
+          </div>
           <button className={commonStyles.button} onClick={() => logout()}>
             ログアウト
           </button>
