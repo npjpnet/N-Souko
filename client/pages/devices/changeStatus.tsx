@@ -1,20 +1,22 @@
 import { useState } from 'react';
-import { Souko } from '../../libs/n-souko';
+
+import useDevice from '../../hooks/useDevice';
 
 import type { NextPage } from 'next';
 import Layout from '../../components/layout';
-import WithAuth from '../../components/with-auth';
+import WithAuth from '../../components/withAuth';
 
 import commonStyles from '../../styles/common.module.scss';
 
 const Home: NextPage = () => {
-  const souko = new Souko();
   const [alertMessage, setAlertMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
   const [deviceCode, setDeviceCode] = useState('');
   const [containerCode, setContainerCode] = useState('');
   const [status, setStatus] = useState('');
+
+  const { changeDeviceWithCode } = useDevice();
 
   const changeStatus = async () => {
     console.log('changeStatus');
@@ -26,14 +28,16 @@ const Home: NextPage = () => {
       return;
     }
 
-    const result = await souko.changeDeviceWithCode(deviceCode, {
+    const result = await changeDeviceWithCode(deviceCode, {
       status,
       containerCode,
     });
     console.log(result);
     if (result.error) {
       setAlertMessage(
-        result.error === 'device not found'
+        result.error === 'unauthorized'
+          ? 'ログインされていません'
+          : result.error === 'device not found'
           ? '指定された機材が見つかりません'
           : result.error === 'container not found'
           ? '指定されたコンテナが見つかりません'

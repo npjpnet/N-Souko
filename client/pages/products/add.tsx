@@ -1,17 +1,17 @@
 import { useState } from 'react';
-import { Souko } from '../../libs/n-souko';
-import { useAuth0 } from '@auth0/auth0-react';
 
 import type { NextPage } from 'next';
 import Layout from '../../components/layout';
-import WithAuth from '../../components/with-auth';
+import WithAuth from '../../components/withAuth';
 
 import useProduct from '../../hooks/useProduct';
+import useDevice from '../../hooks/useDevice';
 
 import commonStyles from '../../styles/common.module.scss';
 
 const Home: NextPage = () => {
-  const { addDeviceWithProductId } = useProduct();
+  const { addProduct } = useProduct();
+  const { addDeviceWithProductId } = useDevice();
 
   const [alertMessage, setAlertMessage] = useState('');
 
@@ -30,7 +30,7 @@ const Home: NextPage = () => {
     productName: '',
   });
 
-  const addProduct = async () => {
+  const addProductController = async () => {
     console.log('addProduct');
 
     if (!productName) {
@@ -42,11 +42,16 @@ const Home: NextPage = () => {
       return;
     }
 
-    const result = await souko.addProduct({
+    const result = await addProduct({
       name: productName,
       maker: { name: makerName },
       genre,
     });
+    if (result.error) {
+      setAlertMessage('ログインされていません');
+      return;
+    }
+
     setProductId(result.productId);
 
     return result.productId;
@@ -56,7 +61,7 @@ const Home: NextPage = () => {
     console.log('addDevice');
     setAlertMessage('');
 
-    const newProductId = !productId ? await addProduct() : productId;
+    const newProductId = !productId ? await addProductController() : productId;
     if (!newProductId) return;
 
     if (!containerCode) {
@@ -68,7 +73,7 @@ const Home: NextPage = () => {
       return;
     }
 
-    const result = await souko.addDevice(newProductId, {
+    const result = await addDeviceWithProductId(newProductId, {
       containerCode: containerCode,
       status,
       serialNumber,

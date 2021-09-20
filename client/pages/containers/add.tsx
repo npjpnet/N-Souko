@@ -4,7 +4,7 @@ import useContainer from '../../hooks/useContainer';
 
 import type { NextPage } from 'next';
 import Layout from '../../components/layout';
-import WithAuth from '../../components/with-auth';
+import WithAuth from '../../components/withAuth';
 
 import commonStyles from '../../styles/common.module.scss';
 
@@ -43,6 +43,10 @@ const Home: NextPage = () => {
       storageId,
       name: containerName,
     });
+    if (result.error === 'unauthorized') {
+      setAlertMessage('ログインされていません');
+      return;
+    }
     if (result.error === 'storage not found') {
       setAlertMessage('指定された倉庫が見つかりません');
       return;

@@ -13,19 +13,23 @@ const useContainer = () => {
     return json;
   };
 
-  const getContainer = async (code: string) => {
+  const getContainerWithCode = async (code: string) => {
     const token = await getToken();
 
     const res = await get(`/containers/code/${code}`, token);
+    if (res.status === 401) {
+      return { error: 'unauthorized' };
+    }
+
     if (res.status === 404) {
-      return null;
+      return { error: 'notfound' };
     }
 
     const json = await res.json();
     return json;
   };
 
-  return { addContainer, getContainer };
+  return { addContainer, getContainerWithCode };
 };
 
 export default useContainer;

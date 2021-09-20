@@ -1,14 +1,14 @@
 import { useState } from 'react';
-import { Souko } from '../../libs/n-souko';
 
 import type { NextPage } from 'next';
 import Layout from '../../components/layout';
-import WithAuth from '../../components/with-auth';
+import WithAuth from '../../components/withAuth';
+
+import useContainer from '../../hooks/useContainer';
 
 import commonStyles from '../../styles/common.module.scss';
 
 const Home: NextPage = () => {
-  const souko = new Souko();
   const [alertMessage, setAlertMessage] = useState('');
 
   const [containerCode, setContainerCode] = useState('');
@@ -42,6 +42,8 @@ const Home: NextPage = () => {
     ],
   });
 
+  const { getContainerWithCode } = useContainer();
+
   const getContainer = async () => {
     console.log('getContainer');
     setAlertMessage('');
@@ -51,8 +53,12 @@ const Home: NextPage = () => {
       return;
     }
 
-    const result = await souko.getContainerWithCode(containerCode);
-    if (!result) {
+    const result = await getContainerWithCode(containerCode);
+    if (result.error === 'unauthorized') {
+      setAlertMessage('ログインされていません');
+      return;
+    }
+    if (result.error === 'notfound') {
       setAlertMessage('指定されたコンテナが見つかりません');
       return;
     }
