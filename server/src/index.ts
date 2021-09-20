@@ -204,9 +204,10 @@ class Souko {
           .then(
             async (o: { container: Container | null; devices: Device[] }) => {
               if (!o.container) {
-                return res.status(404).json({ error: 'storage not found' });
+                return res.status(404).json({ error: 'container not found' });
               }
 
+              console.log(o.container);
               const result = {
                 container: o.container,
                 storage: await this._db.getStorageWithId(o.container.storageId),
