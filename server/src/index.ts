@@ -259,12 +259,15 @@ class Souko {
             ? { genre: req.query.genre }
             : {};
 
+        //ジャンルに所属する全ての機材を出すクエリ
+        const searchQuery =
+          typeof req.query.genre === 'string' && !req.query.query
+            ? [{ genre: req.query.genre }]
+            : [{ name: req.query.query }, { maker: { name: req.query.query } }];
+
         this._db
           .findProductsWithQuery({
-            $or: [
-              { name: req.query.query },
-              { maker: { name: req.query.query } },
-            ],
+            $or: searchQuery,
             $and: [genre],
           })
           .then((o: Product[]) => {
